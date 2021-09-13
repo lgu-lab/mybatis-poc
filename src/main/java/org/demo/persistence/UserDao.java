@@ -40,10 +40,10 @@ public interface UserDao {
 	public void insert(User user);
 
 	@Update({"update " + TABLE + " set " ,
-				"username=#{username},",
-				"password=#{password},",
-				"email=#{email} ",
-			"where id=#{id}" })
+				"username = #{username},",
+				"password = #{password},",
+				"email = #{email} ",
+			"where id = #{id}" })
 	public int update(User user);
 
 	@Delete("delete from " + TABLE + " where id = #{id}")
