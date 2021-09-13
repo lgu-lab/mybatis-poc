@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<environments default="demo">
+		<environment id="demo">
+			<transactionManager type="JDBC" />
+			<!-- Mybatis supports three types of data source configurations: UNPOOLED, POOLED and JNDI -->
+			<dataSource type="POOLED">
+				<property name="driver"   value="org.h2.Driver" />
+				<property name="url"      value="jdbc:h2:mem:mydb;INIT=RUNSCRIPT FROM 'classpath:create_mydb.sql'" />
+				<property name="username" value="sa" />
+				<property name="password" value="sa" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<package name="org.demo.persistence" />
+	</mappers>
+</configuration>
