@@ -2,15 +2,19 @@ package org.demo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.demo.domain.Car;
 import org.demo.domain.User;
+import org.demo.persistence.CarDao;
 import org.demo.persistence.UserDao;
 
 public class Main1 {
@@ -45,6 +49,27 @@ public class Main1 {
 		}
 	}
 	
+	private static User buildUser(Integer id, String username, String password, String email) {
+		// Build user with only default constructor and setters
+		User user = new User();
+		user.setId(id);
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setEmail(email);
+		return user ;
+	}
+	private static Car buildCar(Integer id, String name, BigDecimal price, boolean ok) {
+		// Build user with only default constructor and setters
+		Car car = new Car();
+		//car.setId(id);
+		car.setCarId(id);
+		//car.setName(name);
+		car.setCar_Name(name);
+		car.setPrice(null);
+		car.setOk(ok);
+		return car ;
+	}
+	
 	/**
 	 * SqlSession scope : See : https://mybatis.org/mybatis-3/getting-started.html 
 	 * Each thread should have its own instance of SqlSession. 
@@ -57,6 +82,9 @@ public class Main1 {
 	 * @param sqlSession
 	 */
 	private static void process(SqlSession sqlSession) {
+		
+		LogFactory.useJdkLogging();
+		
 		sqlSession.getConfiguration();
 		sqlSession.getConnection(); // Retrieves inner database connection (java.sql.Connection)
 		sqlSession.clearCache();
@@ -70,6 +98,8 @@ public class Main1 {
 		
 		// Get MAPPER :   <T> T getMapper(Class<T> type);
 		UserDao userDao = sqlSession.getMapper(UserDao.class);
+		CarDao  carDao = sqlSession.getMapper(CarDao.class);
+
 		/*
 		 * Mapper scope : See : https://mybatis.org/mybatis-3/getting-started.html
 		 * The best scope for mapper instances is method scope. 
@@ -84,9 +114,9 @@ public class Main1 {
 		userDao.deleteByName("Name5");
 		userDao.deleteByNameAndMail("Name6", "m6@foo.com");
 		
-		int r = userDao.update(new User(4, "NewName4", "secret4", "NewName4@foo.com") );
+		int r = userDao.update(buildUser(4, "NewName4", "secret4", "NewName4@foo.com") );
 		System.out.println("update ret : " + r ) ; // 1 : found => updated
-		r = userDao.update(new User(99, "Name99", "secret99", null) );
+		r = userDao.update(buildUser(99, "Name99", "secret99", null) );
 		System.out.println("update ret : " + r ) ; // 0 : not found => not updated
 		
 
@@ -96,12 +126,36 @@ public class Main1 {
 		System.out.println("findByIdBetween(7, 20) : " ) ;
 		for ( User u : userDao.findByIdBetween(7, 20) ) {
 			System.out.println(" . " + u);
-		}		
+		}
+		
+		insertCars(carDao);
+		findCars(carDao);
+		printAllCars(carDao);
+	}
+
+	//----------------------------------------------------------------------------------------
+	private static void insertCars(CarDao dao) {
+		dao.insert( buildCar(1, "Aaaaa", BigDecimal.valueOf(25000), true));
+		dao.insert( buildCar(2, "Bbbb",  BigDecimal.valueOf(12500), false) );
 	}
 	
+	private static void findCars(CarDao dao) {
+		Car car = dao.findById(1);
+		System.out.println(" find car 1 : " + car);
+	}
+	
+	private static void printAllCars(CarDao dao) {
+		System.out.println("count : " + dao.count() ) ;
+		List<Car> all = dao.findAll();
+		for ( Car x : all ) {
+			System.out.println(" . " + x);
+		}
+	}
+	
+	//----------------------------------------------------------------------------------------
 	private static void insertUsers(UserDao userDao) {
-		userDao.insert( new User(1, "Bob", "abc", "Bob@foo.com") );
-		userDao.insert( new User(2, "Joe", "xyz", "Joe@foo.com") );
+		userDao.insert( buildUser(1, "Bob", "abc", "Bob@foo.com") );
+		userDao.insert( buildUser(2, "Joe", "xyz", "Joe@foo.com") );
 	}
 	
 	private static void insertList(UserDao userDao) {

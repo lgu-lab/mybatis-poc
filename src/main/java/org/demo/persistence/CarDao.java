@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.demo.domain.User;
+import org.demo.domain.Car;
 
 /**
  * MyBatis Mapper with Java API 
@@ -16,37 +16,35 @@ import org.demo.domain.User;
  * Each method name must be unique 
  *
  */
-public interface UserDao {
+public interface CarDao {
 	
-	static final String TABLE = "users" ; 
+	static final String TABLE = "cars" ; 
 
 	@Select("select * from " + TABLE )
-	public List<User> findAll();
+	public List<Car> findAll();
 
-	@Select("select * from " + TABLE +
-			" where id = #{id}")
-	public User findById(Integer id);
+	@Select("select * from " + TABLE + " where car_id = #{id}")
+	public Car findById(Integer idxxx); // single argument => any name
 	
-	@Select("select * from " + TABLE 
-			+ " where id >= #{id1} and id <= #{id2}")
-	public List<User> findByIdBetween(@Param("id1")int id1, @Param("id2")int id2); 
+	@Select("select * from " + TABLE + " where id >= #{id1} and id <= #{id2}")
+	public List<Car> findByIdBetween(@Param("id1")int id1, @Param("id2")int id2); 
 	// many arguments => @Param is mandatory  
 	
 	@Select("select count(*) from " + TABLE)
 	long count();
 	
 	@Insert({"insert into " + TABLE ,
-		"(id, username, password, email)",
-		"values(#{id}, #{username}, #{password}, #{email})"
+		"(car_id, car_name, car_price, car_ok)",
+		"values(#{id}, #{name}, #{price}, #{ok})"
 	} )
-	public void insert(User user);
+	public void insert(Car car);
 
 	@Update({"update " + TABLE + " set " ,
 				"username = #{username},",
 				"password = #{password},",
 				"email = #{email} ",
 			"where id = #{id}" })
-	public int update(User user);
+	public int update(Car user);
 
 	@Delete("delete from " + TABLE + " where id = #{id}")
 	public int delete(Integer id);
@@ -77,7 +75,7 @@ public interface UserDao {
                 ")",
             "</foreach>",
     	"</script>"})
-	public int insertList(List<User> list);
+	public int insertList(List<Car> list);
 	// ### SQL: INSERT INTO users (username, password, email) VALUES   (?, ?, ?) , (?, ?, ?) , (?, ?, ?) , etc
 	
 }

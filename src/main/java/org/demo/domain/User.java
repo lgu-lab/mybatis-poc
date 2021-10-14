@@ -5,19 +5,20 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
+	private String unused;
 
 	
 	public User() {
 		super();
 	}
 	
-	public User(Integer id, String username, String password, String email) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.email = email;
-	}
+//	public User(Integer id, String username, String password, String email) {
+//		super();
+//		this.id = id;
+//		this.username = username;
+//		this.password = password;
+//		this.email = email;
+//	}
 	
 	public Integer getId() {
 		return id;
@@ -47,9 +48,19 @@ public class User {
 		this.email = email;
 	}
 
+	public String getUnused() {
+		return unused;
+	}
+	public void setUnused(String unused) {
+		this.unused = unused;
+	}
+
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id + ", username='" + username + '\'' + ", password='" + password + '\'' + ", email='"
-				+ email + '\'' + '}';
+		return "User [id=" + id + ", username=" + username 
+				+ ", password=" + password + ", email=" + email 
+				+ ", unused=" + unused + "]";
 	}
+
+
 }

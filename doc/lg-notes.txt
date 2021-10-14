@@ -1,0 +1,21 @@
+
+XxxDao :
+
+ Dao usage by MyBatis : 
+ 
+ 1) MyBatis check columns existence 
+ 
+ 2) MyBatis try to get Java object attributes from "#xxx" 
+   - uses getter or private field name 
+   ( search getter first, if no getter use introspection )
+ 
+ Error examples :
+   - There is no getter for property named 'xxx' in class 'xxx'
+   
+   
+ In "select * from TABLE" no error if no matching between Table/Java object 
+   search matching colum-name with SETTER or FIELD-NAME (even if private)
+   populate only fields matching the column name 
+   if ZERO field matching returns NULL
+ 
+   Can return a list of N null objects

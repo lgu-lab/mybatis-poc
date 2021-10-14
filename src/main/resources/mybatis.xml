@@ -3,7 +3,18 @@
 <configuration>
 	<environments default="demo">
 		<environment id="demo">
-			<transactionManager type="JDBC" />
+			<transactionManager type="JDBC" /> 
+			<!-- 
+			JDBC – This configuration simply makes use of the JDBC commit and rollback facilities directly. 
+			    It relies on the connection retrieved from the dataSource to manage the scope of the transaction.
+			    
+			MANAGED – This configuration simply does almost nothing. It never commits, or rolls back a connection. 
+			   Instead, it lets the container manage the full lifecycle of the transaction (e.g. a JEE Application Server context).
+			 
+			If you are planning to use MyBatis with Spring there is no need to configure any TransactionManager 
+			because the Spring module will set its own one overriding any previously set configuration. 
+			-->
+			
 			<!-- Mybatis supports three types of data source configurations: UNPOOLED, POOLED and JNDI -->
 			<dataSource type="POOLED">
 				<property name="driver"   value="org.h2.Driver" />

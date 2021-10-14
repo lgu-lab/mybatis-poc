@@ -5,3 +5,11 @@ CREATE TABLE `users`  (
   `email` VARCHAR(50) ,
   PRIMARY KEY (`id`)
 ) ;
+
+CREATE TABLE `cars`  (
+  `car_id` INT(10) NOT NULL,
+  `car_name` VARCHAR(40),
+  `car_price` DECIMAL ,
+  `car_ok` BOOLEAN ,
+  PRIMARY KEY (`car_id`)
+) ;
