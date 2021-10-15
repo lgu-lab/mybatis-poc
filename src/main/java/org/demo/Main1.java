@@ -13,13 +13,17 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.demo.domain.Car;
+import org.demo.domain.Comment;
 import org.demo.domain.Month;
 import org.demo.domain.Order;
 import org.demo.domain.User;
+import org.demo.domain.Year;
 import org.demo.persistence.CarDao;
+import org.demo.persistence.CommentDao;
 import org.demo.persistence.MonthDao;
 import org.demo.persistence.OrderDao;
 import org.demo.persistence.UserDao;
+import org.demo.persistence.YearDao;
 
 public class Main1 {
 
@@ -70,12 +74,13 @@ public class Main1 {
 		car.setOk(ok);
 		return car ;
 	}
-	private static Month buildMonth(int year, int month, String name, boolean open) {
-		Month o = new Month();
-		o.setYear(year);
-		o.setMonth(month);
+	private static Month buildMonth(int year, int month, String name, boolean open, int commentId) {
+		Month o = new Month(year, month);
+//		o.setYear(year);
+//		o.setMonth(month);
 		o.setName(name);
 		o.setOpen(open);
+		o.setCommentId(commentId);
 		return o ;
 	}	
 	private static Order buildOrder(int id,  String name, BigDecimal price, String customer, int year, int month) {
@@ -118,6 +123,10 @@ public class Main1 {
 		testsWithUser(sqlSession);
 		System.out.println("===========================================");
 		testsWithCar(sqlSession);
+		System.out.println("===========================================");
+		testsWithYear(sqlSession);
+		System.out.println("===========================================");
+		testsWithComment(sqlSession);
 		System.out.println("===========================================");
 		testsWithMonth(sqlSession);
 		System.out.println("===========================================");
@@ -249,6 +258,48 @@ public class Main1 {
 	}
 	
 	//----------------------------------------------------------------------------------------
+	// YEAR
+	//----------------------------------------------------------------------------------------
+	private static void testsWithYear(SqlSession sqlSession) {
+		YearDao  dao = sqlSession.getMapper(YearDao.class);
+		insertYears(dao);
+		printAllYears(dao) ;
+	}
+	private static void insertYears(YearDao dao) {
+		dao.insert( new Year(2019, "Year 2019") );
+		dao.insert( new Year(2020, "Year 2020") );
+		dao.insert( new Year(2021, "Year 2021") );
+	}
+	private static void printAllYears(YearDao dao) {
+		System.out.println("count : " + dao.count() ) ;
+		List<Year> all = dao.findAll();
+		for ( Year y : all ) {
+			System.out.println(" . " + y);
+		}
+	}
+	
+	//----------------------------------------------------------------------------------------
+	// COMMENT
+	//----------------------------------------------------------------------------------------
+	private static void testsWithComment(SqlSession sqlSession) {
+		CommentDao  dao = sqlSession.getMapper(CommentDao.class);
+		insertComments(dao);
+		printAllComments(dao) ;
+	}
+	private static void insertComments(CommentDao dao) {
+		dao.insert( new Comment(11, "Comment 11") );
+		dao.insert( new Comment(22, "Comment 22") );
+		dao.insert( new Comment(33, "Comment 33") );
+	}
+	private static void printAllComments(CommentDao dao) {
+		System.out.println("count : " + dao.count() ) ;
+		List<Comment> all = dao.findAll();
+		for ( Comment y : all ) {
+			System.out.println(" . " + y);
+		}
+	}
+	
+	//----------------------------------------------------------------------------------------
 	// MONTH
 	//----------------------------------------------------------------------------------------
 	private static void testsWithMonth(SqlSession sqlSession) {
@@ -262,10 +313,10 @@ public class Main1 {
 	
 	//----------------------------------------------------------------------------------------
 	private static void insertMonths(MonthDao dao) {
-		dao.insert( buildMonth(2020, 01, "Jan 2020", false) );
-		dao.insert( buildMonth(2020, 02, "Feb 2020", false)  );
-		dao.insert( buildMonth(2021, 01, "Jan 2021", true) );
-		dao.insert( buildMonth(2021, 02, "Feb 2021", true) );
+		dao.insert( buildMonth(2020, 01, "Jan 2020", false, 11) );
+		dao.insert( buildMonth(2020, 02, "Feb 2020", false, 22)  );
+		dao.insert( buildMonth(2021, 01, "Jan 2021", true, 33) );
+		dao.insert( buildMonth(2021, 02, "Feb 2021", true, 0) );
 	}
 	private static void deleteMonths(MonthDao dao) {
 		dao.delete( 2020, 01 );
@@ -300,6 +351,10 @@ public class Main1 {
 
 		MonthDao  monthDao = sqlSession.getMapper(MonthDao.class);
 		printAllMonths(monthDao);
+		// direct call to findOrderList()
+		System.out.println("orders list size for  2021/1: " + monthDao.findOrderList(2021, 1).size());
+		System.out.println("orders list size for  2021/2: " + monthDao.findOrderList(2021, 2).size());
+		System.out.println("orders list size for  2021/3: " + monthDao.findOrderList(2021, 3).size());
 	}
 	
 	//----------------------------------------------------------------------------------------

@@ -12,8 +12,16 @@ public class Month {
 	// OneToMany relation
 	private List<Order> orderList = new LinkedList<>();
 	
-	public Month() {
+	// ManyToOne relation (owning side with FK)
+	private int commentId; // FK to Comment
+	private Comment refComment;
+	
+	private Year refYear; // FK is year (part of PK)
+	
+	public Month(int year, int month) {
 		super();
+		this.year = year;
+		this.month = month;
 	}
 
 	public int getYear() {
@@ -48,10 +56,35 @@ public class Month {
 		return orderList;
 	}
 	
+	
+	public int getCommentId() {
+		return commentId;
+	}
+	public void setCommentId(int commentId) {
+		this.commentId = commentId;
+	}
+
+	// Object referenced from FK
+	public Comment getRefComment() {
+		return refComment;
+	}
+
+	// Object referenced from FK
+	public Year getRefYear() {
+		return refYear;
+	}
+
 	@Override
 	public String toString() {
-		return "Month [" + year + "/" + month + " : name=" + name + ", open=" + open 
-				+ ", orders count=" + orderList.size() + "]";
+		return "Month : [" + year + "/" + month + "] : name=" + name + ", open=" + open 
+				+ ", comment id : " + commentId
+				+ "\n"
+				+ "   --> @One  refComment : " + refComment
+				+ "\n"
+				+ "   --> @One  refYear : " + refYear
+				+ "\n"
+				+ "   --> @Many orderList size : " + orderList.size() 
+				;
 	}
 
 }

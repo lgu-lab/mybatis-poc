@@ -14,11 +14,24 @@ CREATE TABLE `cars`  (
   PRIMARY KEY (`car_id`)
 ) ;
 
+CREATE TABLE `years`  (
+	year  INT NOT NULL,
+	name VARCHAR(40),
+  PRIMARY KEY (`year`)
+) ;
+
+CREATE TABLE `comments`  (
+	id   INT NOT NULL,
+	text VARCHAR(40),
+  PRIMARY KEY (`id`)
+) ;
+
 CREATE TABLE `months`  (
 	year  INT NOT NULL,
 	month INT NOT NULL,
 	name VARCHAR(40),
 	open BOOLEAN ,
+	comment_id INT ,
   PRIMARY KEY (`year`, `month`)
 ) ;
 
