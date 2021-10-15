@@ -9,8 +9,8 @@ XxxDao :
    - uses getter or private field name 
    ( search getter first, if no getter use introspection )
  
- Error examples :
-   - There is no getter for property named 'xxx' in class 'xxx'
+   Error examples :
+     - There is no getter for property named 'xxx' in class 'xxx'
    
    
  In "select * from TABLE" no error if no matching between Table/Java object 
@@ -19,3 +19,14 @@ XxxDao :
    if ZERO field matching returns NULL
  
    Can return a list of N null objects
+   
+   SQL requests in DAO : 
+   Without "@Param" available parameters are : 
+   		#{arg0}, #{arg1}, etc 
+   		and 
+   		#{param1}, #{param2}, etc
+   
+   Example with specific param names :
+   	" WHERE year = #{param1} AND month = #{param2}")
+	List<Order> findOrderList(@Param("year") int year, @Param("month") int month);
+   it works ! ( #{paramX} can be used even if @Param defined a specific name )

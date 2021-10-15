@@ -14,9 +14,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.demo.domain.Car;
 import org.demo.domain.Month;
+import org.demo.domain.Order;
 import org.demo.domain.User;
 import org.demo.persistence.CarDao;
 import org.demo.persistence.MonthDao;
+import org.demo.persistence.OrderDao;
 import org.demo.persistence.UserDao;
 
 public class Main1 {
@@ -75,6 +77,16 @@ public class Main1 {
 		o.setName(name);
 		o.setOpen(open);
 		return o ;
+	}	
+	private static Order buildOrder(int id,  String name, BigDecimal price, String customer, int year, int month) {
+		Order o = new Order();
+		o.setId(id);
+		o.setName(name);
+		o.setPrice(price);
+		o.setCustomer(customer);
+		o.setYear(year);
+		o.setMonth(month);
+		return o ;
 	}
 	
 	/**
@@ -109,6 +121,8 @@ public class Main1 {
 		System.out.println("===========================================");
 		testsWithMonth(sqlSession);
 		System.out.println("===========================================");
+		testsWithOrder(sqlSession);
+		System.out.println("===========================================");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -118,6 +132,7 @@ public class Main1 {
 		// Get MAPPER :   <T> T getMapper(Class<T> type);
 		UserDao userDao = sqlSession.getMapper(UserDao.class);
 
+		int r;
 		/*
 		 * Mapper scope : See : https://mybatis.org/mybatis-3/getting-started.html
 		 * The best scope for mapper instances is method scope. 
@@ -128,11 +143,16 @@ public class Main1 {
 		insertList(userDao);
 		printAllUsers(userDao);
 		
-		userDao.delete(3);
-		userDao.deleteByName("Name5");
-		userDao.deleteByNameAndMail("Name6", "m6@foo.com");
+		r = userDao.delete(3);
+		System.out.println("delete(3) ret : " + r ) ;  // 1 : found => deleted
+		r = userDao.delete(3);
+		System.out.println("delete(3) ret : " + r ) ;  // 0 : not found => not deleted
+		r = userDao.deleteByName("Name5");
+		System.out.println("deleteByName ret : " + r ) ; 
+		r = userDao.deleteByNameAndMail("Name6", "m6@foo.com");
+		System.out.println("deleteByNameAndMail ret : " + r ) ; 
 		
-		int r = userDao.update(buildUser(4, "NewName4", "secret4", "NewName4@foo.com") );
+		r = userDao.update(buildUser(4, "NewName4", "secret4", "NewName4@foo.com") );
 		System.out.println("update ret : " + r ) ; // 1 : found => updated
 		r = userDao.update(buildUser(99, "Name99", "secret99", null) );
 		System.out.println("update ret : " + r ) ; // 0 : not found => not updated
@@ -229,15 +249,15 @@ public class Main1 {
 	}
 	
 	//----------------------------------------------------------------------------------------
-	// MONT
+	// MONTH
 	//----------------------------------------------------------------------------------------
 	private static void testsWithMonth(SqlSession sqlSession) {
 		MonthDao  dao = sqlSession.getMapper(MonthDao.class);
 		insertMonths(dao);
 		findMonths(dao);
-		printAllCars(dao);
+		printAllMonths(dao);
 		deleteMonths(dao);
-		printAllCars(dao);
+		printAllMonths(dao);
 	}
 	
 	//----------------------------------------------------------------------------------------
@@ -251,18 +271,49 @@ public class Main1 {
 		dao.delete( 2020, 01 );
 		dao.delete( 2020, 02 );
 	}
-	
 	private static void findMonths(MonthDao dao) {
 		System.out.println(" find month 2020/01 : " + dao.findById(2020, 1));
 		System.out.println(" find month 2020/12 : " + dao.findById(2020, 12));
 	}
-	
-	private static void printAllCars(MonthDao dao) {
+	private static void printAllMonths(MonthDao dao) {
 		System.out.println("count : " + dao.count() ) ;
 		List<Month> all = dao.findAll();
-		for ( Month x : all ) {
+		for ( Month m : all ) {
+			System.out.println(" . " + m);
+			for ( Order o : m.getOrders() ) {
+				System.out.println("   . Order : " + o);
+				
+			}
+		}
+	}
+
+	//----------------------------------------------------------------------------------------
+	// ORDER
+	//----------------------------------------------------------------------------------------
+	private static void testsWithOrder(SqlSession sqlSession) {
+		OrderDao  dao = sqlSession.getMapper(OrderDao.class);
+		insertOrders(dao);
+		printAllOrders(dao);
+//		printAllCars(dao);
+//		deleteMonths(dao);
+//		printAllCars(dao);
+
+		MonthDao  monthDao = sqlSession.getMapper(MonthDao.class);
+		printAllMonths(monthDao);
+	}
+	
+	//----------------------------------------------------------------------------------------
+	private static void insertOrders(OrderDao dao) {
+		dao.insert( buildOrder(1, "order1", BigDecimal.valueOf(1100), "customerA", 2021, 01) );
+		dao.insert( buildOrder(2, "order2", BigDecimal.valueOf(2200), "customerB", 2021, 01) );
+		dao.insert( buildOrder(3, "order3", BigDecimal.valueOf(3300), "customerC", 2021, 02) );
+		//dao.insert( buildOrder(9, "order9", BigDecimal.valueOf(9900), "customerC", 2023, 02) ); // FK violation
+	}
+	private static void printAllOrders(OrderDao dao) {
+		System.out.println("count : " + dao.count() ) ;
+		List<Order> all = dao.findAll();
+		for ( Order x : all ) {
 			System.out.println(" . " + x);
 		}
 	}
-	
 }

@@ -9,7 +9,7 @@ public class Order {
 	private String customer;
 	
 	private int year; // FK
-	private short month ; // FK
+	private int month ; // FK
 	
 	public Order() {
 		super();
@@ -55,11 +55,11 @@ public class Order {
 		this.year = year;
 	}
 
-	public short getMonth() {
+	public int getMonth() {
 		return month;
 	}
 
-	public void setMonth(short month) {
+	public void setMonth(int month) {
 		this.month = month;
 	}
 

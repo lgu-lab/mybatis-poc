@@ -21,3 +21,14 @@ CREATE TABLE `months`  (
 	open BOOLEAN ,
   PRIMARY KEY (`year`, `month`)
 ) ;
+
+CREATE TABLE `orders`  (
+	id   INT NOT NULL,
+	name VARCHAR(40),
+	customer VARCHAR(40),
+    price DECIMAL ,
+	year  INT ,
+	month INT ,
+  PRIMARY KEY (id),
+  foreign key (year, month) references months(year, month)
+) ;
