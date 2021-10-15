@@ -13,8 +13,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.demo.domain.Car;
+import org.demo.domain.Month;
 import org.demo.domain.User;
 import org.demo.persistence.CarDao;
+import org.demo.persistence.MonthDao;
 import org.demo.persistence.UserDao;
 
 public class Main1 {
@@ -59,15 +61,20 @@ public class Main1 {
 		return user ;
 	}
 	private static Car buildCar(Integer id, String name, BigDecimal price, boolean ok) {
-		// Build user with only default constructor and setters
 		Car car = new Car();
-		//car.setId(id);
-		car.setCarId(id);
-		//car.setName(name);
-		car.setCar_Name(name);
-		car.setPrice(null);
+		car.setId(id);
+		car.setName(name);
+		car.setPrice(price);
 		car.setOk(ok);
 		return car ;
+	}
+	private static Month buildMonth(int year, int month, String name, boolean open) {
+		Month o = new Month();
+		o.setYear(year);
+		o.setMonth(month);
+		o.setName(name);
+		o.setOpen(open);
+		return o ;
 	}
 	
 	/**
@@ -95,10 +102,21 @@ public class Main1 {
 		sqlSession.rollback(true); // force = true
 		sqlSession.flushStatements();
 		
-		
+		System.out.println("===========================================");
+		testsWithUser(sqlSession);
+		System.out.println("===========================================");
+		testsWithCar(sqlSession);
+		System.out.println("===========================================");
+		testsWithMonth(sqlSession);
+		System.out.println("===========================================");
+	}
+
+	//----------------------------------------------------------------------------------------
+	// USER
+	//----------------------------------------------------------------------------------------
+	private static void testsWithUser(SqlSession sqlSession) {
 		// Get MAPPER :   <T> T getMapper(Class<T> type);
 		UserDao userDao = sqlSession.getMapper(UserDao.class);
-		CarDao  carDao = sqlSession.getMapper(CarDao.class);
 
 		/*
 		 * Mapper scope : See : https://mybatis.org/mybatis-3/getting-started.html
@@ -128,28 +146,6 @@ public class Main1 {
 			System.out.println(" . " + u);
 		}
 		
-		insertCars(carDao);
-		findCars(carDao);
-		printAllCars(carDao);
-	}
-
-	//----------------------------------------------------------------------------------------
-	private static void insertCars(CarDao dao) {
-		dao.insert( buildCar(1, "Aaaaa", BigDecimal.valueOf(25000), true));
-		dao.insert( buildCar(2, "Bbbb",  BigDecimal.valueOf(12500), false) );
-	}
-	
-	private static void findCars(CarDao dao) {
-		Car car = dao.findById(1);
-		System.out.println(" find car 1 : " + car);
-	}
-	
-	private static void printAllCars(CarDao dao) {
-		System.out.println("count : " + dao.count() ) ;
-		List<Car> all = dao.findAll();
-		for ( Car x : all ) {
-			System.out.println(" . " + x);
-		}
 	}
 	
 	//----------------------------------------------------------------------------------------
@@ -178,4 +174,95 @@ public class Main1 {
 			System.out.println(" . " + u);
 		}
 	}
+
+	//----------------------------------------------------------------------------------------
+	// CAR
+	//----------------------------------------------------------------------------------------
+	private static void testsWithCar(SqlSession sqlSession) {
+		CarDao  dao = sqlSession.getMapper(CarDao.class);
+		insertCars(dao);
+		updateCars(dao);
+		findCars(dao);
+		printAllCars(dao);
+		findByIdBetween(dao, 1, 3); 
+		deleteCars(dao);
+		printAllCars(dao);
+	}
+	
+	//----------------------------------------------------------------------------------------
+	private static void insertCars(CarDao dao) {
+		dao.insert( buildCar(1, "Aaaaa", BigDecimal.valueOf(25000), true));
+		dao.insert( buildCar(2, "Bbbb",  BigDecimal.valueOf(12500), false) );
+		dao.insert( buildCar(3, "Cccc",  BigDecimal.valueOf(33000), false) );
+		dao.insert( buildCar(4, "Dddd",  BigDecimal.valueOf(44000), false) );
+	}
+	private static void updateCars(CarDao dao) {
+		dao.update( buildCar(1, "Aa updated", BigDecimal.valueOf(25000), true));
+		dao.update( buildCar(2, "Bb updated", BigDecimal.valueOf(12500), false) );
+		dao.update( buildCar(101, "Xx updated", BigDecimal.valueOf(33000), false) );
+		dao.update( buildCar(102, "Yy updated", BigDecimal.valueOf(44000), false) );
+	}
+	
+	private static void findCars(CarDao dao) {
+		Car car = dao.findById(1);
+		System.out.println(" find car 1 : " + car);
+	}
+
+	private static void findByIdBetween(CarDao dao, int id1, int id2) {
+		System.out.println(" findByIdBetween(" + id1 + "," + id2 + ") : " );
+		for ( Car o : dao.findByIdBetween(id1, id2) ) {
+			System.out.println(" . " + o);
+		}
+	}
+
+	private static void deleteCars(CarDao dao) {
+		dao.delete(1);
+		dao.delete(3);
+	}
+	
+	private static void printAllCars(CarDao dao) {
+		System.out.println("count : " + dao.count() ) ;
+		List<Car> all = dao.findAll();
+		for ( Car x : all ) {
+			System.out.println(" . " + x);
+		}
+	}
+	
+	//----------------------------------------------------------------------------------------
+	// MONT
+	//----------------------------------------------------------------------------------------
+	private static void testsWithMonth(SqlSession sqlSession) {
+		MonthDao  dao = sqlSession.getMapper(MonthDao.class);
+		insertMonths(dao);
+		findMonths(dao);
+		printAllCars(dao);
+		deleteMonths(dao);
+		printAllCars(dao);
+	}
+	
+	//----------------------------------------------------------------------------------------
+	private static void insertMonths(MonthDao dao) {
+		dao.insert( buildMonth(2020, 01, "Jan 2020", false) );
+		dao.insert( buildMonth(2020, 02, "Feb 2020", false)  );
+		dao.insert( buildMonth(2021, 01, "Jan 2021", true) );
+		dao.insert( buildMonth(2021, 02, "Feb 2021", true) );
+	}
+	private static void deleteMonths(MonthDao dao) {
+		dao.delete( 2020, 01 );
+		dao.delete( 2020, 02 );
+	}
+	
+	private static void findMonths(MonthDao dao) {
+		System.out.println(" find month 2020/01 : " + dao.findById(2020, 1));
+		System.out.println(" find month 2020/12 : " + dao.findById(2020, 12));
+	}
+	
+	private static void printAllCars(MonthDao dao) {
+		System.out.println("count : " + dao.count() ) ;
+		List<Month> all = dao.findAll();
+		for ( Month x : all ) {
+			System.out.println(" . " + x);
+		}
+	}
+	
 }

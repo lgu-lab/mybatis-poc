@@ -13,3 +13,11 @@ CREATE TABLE `cars`  (
   `car_ok` BOOLEAN ,
   PRIMARY KEY (`car_id`)
 ) ;
+
+CREATE TABLE `months`  (
+	year  INT NOT NULL,
+	month INT NOT NULL,
+	name VARCHAR(40),
+	open BOOLEAN ,
+  PRIMARY KEY (`year`, `month`)
+) ;

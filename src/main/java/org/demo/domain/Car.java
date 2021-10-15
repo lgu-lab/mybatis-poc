@@ -3,11 +3,12 @@ package org.demo.domain;
 import java.math.BigDecimal;
 
 public class Car {
-	private Integer car_id;
-	private String name;
-	private BigDecimal price;
-	private boolean ok;
-
+	// private fields : same names as COLUMNS NAMES in the SQL table
+	// usable by MyBatis (by introspection)
+	private Integer    car_id;
+	private String     car_name;
+	private BigDecimal car_price;
+	private boolean    car_ok;
 	
 	public Car() {
 		super();
@@ -16,34 +17,34 @@ public class Car {
 	public Integer getId() {
 		return car_id;
 	}
-	public void setCarId(Integer id) {
+	public void setId(Integer id) {
 		this.car_id = id;
 	}
 
-	private String getCar_Name() {
-		return name;
+	public String getName() {
+		return car_name;
 	}
-	public void setCar_Name(String name) {
-		this.name = name;
+	public void setName(String name) {
+		this.car_name = name;
 	}
 
 	public BigDecimal getPrice() {
-		return price;
+		return car_price;
 	}
 	public void setPrice(BigDecimal price) {
-		this.price = price;
+		this.car_price = price;
 	}
 
 	public boolean isOk() {
-		return ok;
+		return car_ok;
 	}
 	public void setOk(boolean ok) {
-		this.ok = ok;
+		this.car_ok = ok;
 	}
 
 	@Override
 	public String toString() {
-		return "Car [id=" + car_id + ", name=" + name + ", price=" + price + ", ok=" + ok + "]";
+		return "Car [id=" + car_id + ", name=" + car_name + ", price=" + car_price + ", ok=" + car_ok + "]";
 	}
 
 }
