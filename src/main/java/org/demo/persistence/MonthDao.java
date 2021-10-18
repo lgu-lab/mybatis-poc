@@ -33,7 +33,7 @@ public interface MonthDao {
 	
 	// without @Param : "Available parameters are [arg1, arg0, param1, param2]"
 	@Select("select * from " + TABLE + " where year = #{param1} AND month = #{param2}")
-	@Results(id="MonthResult", value = {
+	@Results(id="MonthResults", value = {
 		@Result( property = "commentId", column = "comment_id"),
 		@Result( property = "orderList", // field name to populate in Month class
 				 //javaType = List.class, 
@@ -52,7 +52,7 @@ public interface MonthDao {
 	public Month findById(int year, int month); 
 	
 	@Select("select * from " + TABLE )
-	@ResultMap("MonthResult") // reuse the same "result map" as defined in "findById"
+	@ResultMap("MonthResults") // reuse the same "result map" as defined in "findById"
 	public List<Month> findAll();
 
 	@Insert("insert into " + TABLE + "(" +
